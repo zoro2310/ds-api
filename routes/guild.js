@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
 
 
 //get guild by id
-router.get('/guild_id/:guild_id', async (req, res) => {
+router.get('/:guild_id', async (req, res) => {
     try {
         const guild_id = await Guild.findOne({ guild_id: req.params.guild_id });
         if(!guild_id) {
@@ -46,7 +46,7 @@ router.post('/', async (req, res) => {
 
 
 //get member count of a guild
-router.get('/guild_id/:guild_id/member_count', async (req, res) => {
+router.get('/:guild_id/member_count', async (req, res) => {
     try {
         const guild = await Guild.findOne({ guild_id: req.params.guild_id });
         res.send({ member_count: guild.member_count });
@@ -58,7 +58,7 @@ router.get('/guild_id/:guild_id/member_count', async (req, res) => {
 
 
 //update member count of a guild
-router.post('/guild_id/:guild_id/member_count/:member_count', async (req, res) => {
+router.post('/:guild_id/member_count/:member_count', async (req, res) => {
     const member_count = req.params.member_count;
     try {
         const guild = await Guild.findOne({ guild_id: req.params.guild_id });
@@ -76,7 +76,7 @@ router.post('/guild_id/:guild_id/member_count/:member_count', async (req, res) =
 
 
 //add member to a guild
-router.post('/guild_id/:guild_id/member_count/add/:num', async (req, res) => {
+router.post('/:guild_id/member_count/add/:num', async (req, res) => {
     const guild_id = req.params.guild_id;
     try{
         const guild = await Guild.findOne({ guild_id: guild_id });
@@ -95,7 +95,7 @@ router.post('/guild_id/:guild_id/member_count/add/:num', async (req, res) => {
 
 
 //remove member to a guild
-router.post('/guild_id/:guild_id/member_count/remove/:num', async (req, res) => {
+router.post('/:guild_id/member_count/remove/:num', async (req, res) => {
     const guild_id = req.params.guild_id;
     try{
         const guild = await Guild.findOne({ guild_id: guild_id });
@@ -114,7 +114,7 @@ router.post('/guild_id/:guild_id/member_count/remove/:num', async (req, res) => 
 
 
 //get total channel id
-router.get('/guild_id/:guild_id/total_chid', async (req, res) => {
+router.get('/:guild_id/total_chid', async (req, res) => {
     try {
         const guild = await Guild.findOne({ guild_id: req.params.guild_id });
         if(!guild) {
@@ -130,7 +130,7 @@ router.get('/guild_id/:guild_id/total_chid', async (req, res) => {
 
 
 //update total channel id
-router.post('/guild_id/:guild_id/total_chid/:total_channel_id', async (req, res) => {
+router.post('/:guild_id/total_chid/:total_channel_id', async (req, res) => {
     const total_channel_id = req.params.total_channel_id;
     try {
         const guild = await Guild.findOne({ guild_id: req.params.guild_id });

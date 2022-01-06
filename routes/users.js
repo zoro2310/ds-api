@@ -4,10 +4,14 @@ const Guild = require('../models/guild');
 
 const router = express.Router();
 
-router.get('/', async (req, res) => {
+
+//get all guilds of a user using user id
+router.get('/:user_id', async (req, res) => {
     res.send({ message: 'ok' });
 });
 
+
+//get all user of a guild using guild id
 router.get('/guilds/:id', async (req, res) => {
     try {
         const guild = await Guild.findOne({ guild_id: req.params.id });
@@ -23,11 +27,12 @@ router.get('/guilds/:id', async (req, res) => {
 });
 
 
+//get user by id of a guild using guild id
 router.get('/guilds/:gid/users/:uid', async (req, res) => {
-    const uid=req.params.uid;
+    const uid = req.params.uid;
     try {
         const guild = await Guild.findOne({ guild_id: req.params.gid });
-        if(!guild) {
+        if (!guild) {
             res.status(400).send({ message: 'Guild not found' });
             return;
         }
@@ -44,11 +49,14 @@ router.get('/guilds/:gid/users/:uid', async (req, res) => {
 });
 
 
-router.post('/add/:guild_id', async (req, res) => {
-    const user = req.body;
+//add user to a guild using guild id and user id
+router.post('/add/:guild_id/:user_id', async (req, res) => {
+    const user = {
+        user_id: req.params.user_id,
+    };
     try {
         const guild = await Guild.findOne({ guild_id: req.params.guild_id });
-        if(!guild) {
+        if (!guild) {
             res.status(400).send({ message: 'Guild not found' });
             return;
         }
@@ -61,11 +69,13 @@ router.post('/add/:guild_id', async (req, res) => {
     }
 });
 
-router.post('/remove/:guild_id', async (req, res) => {
-    const uid = req.body.user_id;
+
+//delete user from a guild using guild id and user id
+router.post('/remove/:guild_id/:user_id', async (req, res) => {
+    const uid = req.params.user_id;
     try {
         const guild = await Guild.findOne({ guild_id: req.params.guild_id });
-        if(!guild) {
+        if (!guild) {
             res.status(400).send({ message: 'guild not found' });
             return;
         }
@@ -78,22 +88,24 @@ router.post('/remove/:guild_id', async (req, res) => {
     }
 });
 
+
+//add xp to a user using guild id and user id
 router.post('/addxp/:guild_id/:user_id/:xp', async (req, res) => {
     const user_id = req.params.user_id;
     const xp = parseInt(req.params.xp);
     const guild_id = req.params.guild_id;
     try {
         const guild = await Guild.findOne({ guild_id: guild_id });
-        if(!guild) {
+        if (!guild) {
             res.status(400).send({ message: 'guild not found' });
             return;
         }
         const user = await guild.users.find(users => users.user_id == user_id);
-        if(!user) {
+        if (!user) {
             res.status(400).send({ message: 'user not found' });
             return;
         }
-        user.user_xp = user.user_xp+xp;
+        user.user_xp = user.user_xp + xp;
         const savedGuild = await guild.updateOne({ users: guild.users });
         res.send(savedGuild);
     }
@@ -102,22 +114,24 @@ router.post('/addxp/:guild_id/:user_id/:xp', async (req, res) => {
     }
 });
 
+
+//remove xp from a user using guild id and user id
 router.post('/removexp/:guild_id/:user_id/:xp', async (req, res) => {
     const user_id = req.params.user_id;
     const xp = parseInt(req.params.xp);
     const guild_id = req.params.guild_id;
     try {
         const guild = await Guild.findOne({ guild_id: guild_id });
-        if(!guild) {
+        if (!guild) {
             res.status(400).send({ message: 'guild not found' });
             return;
         }
         const user = await guild.users.find(users => users.user_id == user_id);
-        if(!user) {
+        if (!user) {
             res.status(400).send({ message: 'user not found' });
             return;
         }
-        user.user_xp = user.user_xp-xp;
+        user.user_xp = user.user_xp - xp;
         const savedGuild = await guild.updateOne({ users: guild.users });
         res.send(savedGuild);
     }
@@ -125,5 +139,6 @@ router.post('/removexp/:guild_id/:user_id/:xp', async (req, res) => {
         res.send({ message: err });
     }
 });
+
 
 module.exports = router;

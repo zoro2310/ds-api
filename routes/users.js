@@ -4,10 +4,27 @@ const Guild = require('../models/guild');
 
 const router = express.Router();
 
+function update_level(xp) {
+    var level = 0;
+    while (xp >= (level + 1) * 100) {
+        level++;
+    }
+    return level;
+}
+
 
 //get all guilds of a user using user id
 router.get('/:user_id', async (req, res) => {
-    res.send({ message: 'ok' });
+    try {
+        const guilds = await Guild.find({ users: { $elemMatch: { user_id: req.params.user_id } } });
+        if (guilds.length == 0) {
+            res.status(404).send({ message: 'No guilds found for this user' });
+            return;
+        }
+        res.send(guilds);
+    } catch (err) {
+        res.status(500).send(err);
+    }
 });
 
 
@@ -106,8 +123,16 @@ router.post('/addxp/:guild_id/:user_id/:xp', async (req, res) => {
             return;
         }
         user.user_xp = user.user_xp + xp;
+        const prev_level = user.user_level;
+        user.user_level = update_level(user.user_xp);
+        const current_level = user.user_level;
         const savedGuild = await guild.updateOne({ users: guild.users });
-        res.send(savedGuild);
+        const lv_change = prev_level != current_level ? true : false;
+        const message = {
+            "level_change": lv_change,
+            "user_level": current_level
+        }
+        res.send(message);
     }
     catch (err) {
         res.send({ message: err });
@@ -132,8 +157,16 @@ router.post('/removexp/:guild_id/:user_id/:xp', async (req, res) => {
             return;
         }
         user.user_xp = user.user_xp - xp;
+        const prev_level = user.user_level;
+        user.user_level = update_level(user.user_xp);
+        const current_level = user.user_level;
         const savedGuild = await guild.updateOne({ users: guild.users });
-        res.send(savedGuild);
+        const lv_change = prev_level != current_level ? true : false;
+        const message = {
+            "level_change": lv_change,
+            "user_level": current_level
+        }
+        res.send(message);
     }
     catch (err) {
         res.send({ message: err });

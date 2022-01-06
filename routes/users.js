@@ -1,5 +1,4 @@
 const express = require('express');
-const { message } = require('statuses');
 const Guild = require('../models/guild');
 
 const router = express.Router();

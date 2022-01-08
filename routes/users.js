@@ -26,7 +26,7 @@ router.get('/:user_id', async (req, res) => {
     }
 });
 
-
+//http://localhost:5000/users
 //get all user of a guild using guild id
 router.get('/guilds/:id', async (req, res) => {
     try {
@@ -35,7 +35,7 @@ router.get('/guilds/:id', async (req, res) => {
             res.status(400).send({ message: 'Guild not found' });
             return;
         }
-        res.send(guild.users);
+        res.status(200).send(guild.users);
     }
     catch (err) {
         res.send({ message: err });
@@ -54,13 +54,13 @@ router.get('/guilds/:gid/users/:uid', async (req, res) => {
         }
         const user = await guild.users.find(users => users.user_id == uid);
         if (user) {
-            res.send(user);
+            res.status(200).send(user);
         } else {
             res.status(400).send({ message: 'User not found' });
         }
     }
     catch (err) {
-        res.send({ message: err });
+        res.status(200).send({ message: err });
     }
 });
 
@@ -165,10 +165,10 @@ router.post('/removexp/:guild_id/:user_id/:xp', async (req, res) => {
             "level_change": lv_change,
             "user_level": current_level
         }
-        res.send(message);
+        res.status(200).send(message);
     }
     catch (err) {
-        res.send({ message: err });
+        res.status(400).send({ message: err });
     }
 });
 

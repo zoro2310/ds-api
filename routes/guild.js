@@ -36,9 +36,9 @@ router.post('/', async (req, res) => {
     const guild = new Guild(req.body);
     try {
         const savedGuild = await guild.save();
-        res.send(savedGuild);
+        res.status(200).send(savedGuild);
     } catch (err) {
-        res.send({ message: err });
+        res.status(400).send({ message: err });
     }
 });
 

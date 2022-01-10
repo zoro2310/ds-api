@@ -11,17 +11,17 @@ req_Number = {
 }
 
 const guildSchema = new mongoose.Schema({
-    guild_id: req_Number,
+    guild_id: req_String,
     member_count: req_Number,
     total_channel_id: {
-        type: Number,
+        type: String,
         default: 0
     },
     users: [
         {
             user_id: {
-                type: Number,
-                default: 0
+                type: String,
+                default: "0"
             },
             user_xp: {
                 type: Number,
@@ -40,7 +40,7 @@ const guildSchema = new mongoose.Schema({
                 default: 0
             },
             user_last_message: {
-                type: Number,
+                type: String,
                 default: 0
             }
         }

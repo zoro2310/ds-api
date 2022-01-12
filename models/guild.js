@@ -11,7 +11,11 @@ req_Number = {
 }
 
 const guildSchema = new mongoose.Schema({
-    guild_id: req_String,
+    guild_id: {
+        type: String,
+        required: true,
+        unique: true
+    },
     member_count: req_Number,
     total_channel_id: {
         type: String,

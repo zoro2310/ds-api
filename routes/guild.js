@@ -145,4 +145,53 @@ router.post('/:guild_id/total_chid/:total_channel_id', async (req, res) => {
     }
 });
 
+
+//get rank list of a guild using guild id
+router.get('/rank/:gid', async (req, res) => {
+    try {
+        const guild = await Guild.findOne({ guild_id: req.params.gid });
+        if (!guild) {
+            res.status(400).send({ message: 'Guild not found' });
+            return;
+        }
+        const users = guild.users;
+        const sorted_users = users.sort((a, b) => b.user_xp - a.user_xp);
+        res.status(200).send(sorted_users);
+    }
+    catch (err) {
+        res.status(400).send({ message: err });
+    }
+});
+
+
+//get rank of a user using guild id and user id
+router.get('/rank/:gid/:uid', async (req, res) => {
+    const uid = req.params.uid;
+    try {
+        const guild = await Guild.findOne({ guild_id: req.params.gid });
+        if (!guild) {
+            res.status(400).send({ message: 'Guild not found' });
+            return;
+        }
+        const user = await guild.users.find(users => users.user_id == uid);
+        if (!user) {
+            res.status(400).send({ message: 'User not found' });
+            return;
+        }
+        const users = guild.users;
+        const sorted_users = users.sort((a, b) => b.user_xp - a.user_xp);
+        const rank = sorted_users.findIndex(users => users.user_id == uid) + 1;
+        const message = {
+            "rank": rank,
+            "user_xp": user.user_xp,
+            "user_level": user.user_level
+        }
+        res.status(200).send(message);
+    }
+    catch (err) {
+        res.status(400).send({ message: err });
+    }
+});
+
+
 module.exports = router;
